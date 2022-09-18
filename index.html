@@ -23,6 +23,9 @@
             <span style="margin-top:30px;font-size:14px;" v-if="initial_loading">
                 加载字体、脚本、样式表等资源
             </span>
+            <span style="margin-top:30px;font-size:14px;" v-if="!initial_loading">
+                {{loading_text}}
+            </span>
         </div>
         <div class="row" v-show="!loading">
             <div class="col-lg-4"></div>
@@ -493,7 +496,8 @@
                 dorm_favorite: [],          //[[category,building]]
                 floor_favorite: [],         //[[category,building,floor]]
                 loading: true,
-                initial_loading:true
+                initial_loading:true,
+                loading_text:"正在从腾讯物联网API下载数据"
             },
             mounted: function () {
                 this.loadRecentAndFavorite();
