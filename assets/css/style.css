@@ -21,10 +21,10 @@
         --primary20: #814792;
         --primary30: #672F78;
         --primary40: #4E165F;
-        --secondary30: #514154;
-        --secondary40: #6A596C;
-        --secondary50: #847185;
-        --secondary70: #B9A5BB;
+        --secondary30: #B9A5BB;
+        --secondary40: #847185;
+        --secondary50: #6A596C;
+        --secondary70: #514154;
         --favorite: #E9D41B;
         --available: #0A9431;
         --tertiary: #F5B7B2;
@@ -49,8 +49,8 @@ body {
 
     font-style: normal;
     font-weight: 400;
-    font-size: 30px;
-    line-height: 38px;
+    font-size: 26px;
+    line-height: 30px;
     color: var(--primary20);
 }
 
@@ -58,8 +58,8 @@ body {
 
     font-style: normal;
     font-weight: 400;
-    font-size: 28px;
-    line-height: 36px;
+    font-size: 24px;
+    line-height: 28px;
     color: var(--secondary30);
     margin-top: 12px;
 }
