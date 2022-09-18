@@ -215,6 +215,7 @@ body {
     /* M3/ref/primary/primary40 */
 
     color: var(--primary40);
+    text-decoration: none;
 }
 
 .loading-mask {
