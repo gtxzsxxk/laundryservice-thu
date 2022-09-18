@@ -1,0 +1,17 @@
+{
+    "lang": "zh-cn",
+    "name": "Laundry Service Of THU",
+    "short_name": "ThuLaundry",
+    "description": "用于查询清华大学各洗衣房内洗衣机的占用情况。",
+    "start_url": "/",
+    "background_color": "#F8F2F9",
+    "theme_color": "#4E165F",
+    "orientation": "portrait-primary",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "/favicon512.png",
+            "sizes": "512x512"
+        }
+    ]
+}

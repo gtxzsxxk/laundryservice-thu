@@ -1,0 +1,257 @@
+:root {
+    color-scheme: light dark;
+    --surface1: #F8F2F9;
+    --surface2: #F5EDF6;
+    --primary20: #4E165F;
+    --primary30: #672F78;
+    --primary40: #814792;
+    --secondary30: #514154;
+    --secondary40: #6A596C;
+    --secondary50: #847185;
+    --secondary70: #B9A5BB;
+    --favorite: #E9D41B;
+    --available: #0A9431;
+    --tertiary: #82524E;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --surface1: #282329;
+        --surface2: #2F272F;
+        --primary20: #814792;
+        --primary30: #672F78;
+        --primary40: #4E165F;
+        --secondary30: #514154;
+        --secondary40: #6A596C;
+        --secondary50: #847185;
+        --secondary70: #B9A5BB;
+        --favorite: #E9D41B;
+        --available: #0A9431;
+        --tertiary: #F5B7B2;
+    }
+}
+
+body {
+    background-color: var(--surface1) !important;
+    font-family: 'Noto Sans Regular','Noto Sans Han','Roboto', '微软雅黑', '微软雅黑UI', 'Simsun', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.headline {
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+    color: var(--primary20);
+}
+
+.headline-eng {
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 38px;
+    color: var(--primary20);
+}
+
+.sub-headline {
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 36px;
+    color: var(--secondary30);
+    margin-top: 12px;
+}
+
+.line-box {
+    display: flex;
+    align-items: center;
+}
+
+.line {
+    flex-grow: 1;
+    border-top: 1px solid var(--secondary50);
+}
+
+.line-text {
+    margin: 0 10px;
+    color: var(--primary30)
+}
+
+.dorm-box {
+    margin-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.dorm-card {
+    background-color: var(--surface2);
+    border-radius: 18px;
+    width: 250px;
+    flex: 0 0 48%;
+    height: 75px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin: 10px 1% 0 1%;
+    cursor: pointer;
+}
+
+.dorm-card-text {
+
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    /* identical to box height, or 150% */
+
+    letter-spacing: 0.1px;
+    color: var(--secondary40);
+}
+
+.washer-card {
+    background-color: var(--surface2);
+    border-radius: 18px;
+    width: 250px;
+    flex: 0 0 48%;
+    height: 165px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin: 10px 1% 0 1%;
+}
+
+.washer-num {
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 28px;
+    color: var(--primary30);
+    max-height: 28px;
+}
+
+.washer-type {
+
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    /* or 150% */
+
+    letter-spacing: 0.1px;
+    color: var(--secondary40);
+}
+
+.washer-status-ok {
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 28px;
+    /* or 127% */
+
+    text-align: center;
+
+    color: #0A9431;
+}
+
+.washer-status-not-ok {
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 28px;
+    /* or 127% */
+    text-align: center;
+    /* M3/sys/light/tertiary */
+    color: var(--tertiary);
+}
+
+.washer-id {
+
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    /* or 143% */
+
+    letter-spacing: 0.1px;
+
+    /* M3/ref/secondary/secondary70 */
+
+    color: var(--secondary70);
+}
+
+.bottom-text {
+
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    /* identical to box height, or 133% */
+
+    letter-spacing: 0.5px;
+
+    /* M3/ref/secondary/secondary50 */
+
+    color: var(--secondary50);
+}
+
+.bottom-link {
+
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    /* identical to box height, or 133% */
+
+    letter-spacing: 0.5px;
+
+    /* M3/ref/primary/primary40 */
+
+    color: var(--primary40);
+}
+
+.loading-mask {
+    z-index: 999;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--surface1);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    justify-content: center;
+}
+
+::-webkit-scrollbar{
+    /*垂直滚动条的宽*/
+    width: 5px;
+    height: 16px;
+}
+::-webkit-scrollbar-track-piece{
+    /*修改滚动条的背景和圆角*/
+    background: var(--surface1);
+    -webkit-border-radius: 6px;
+}
+/*修改垂直滚动条的样式*/
+::-webkit-scrollbar-thumb:vertical{
+    background-color: #9b9b9b;
+    -webkit-border-radius: 6px;
+}
+
+/*修改水平滚动条的样式*/
+::-webkit-scrollbar-thumb:horizontal{
+    background-color: #9b9b9b;
+    -webkit-border-radius: 6px;
+}

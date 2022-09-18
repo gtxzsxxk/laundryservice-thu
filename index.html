@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="manifest" href="/manifest.json">
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/css/style.css" rel="stylesheet">
+
+    <title>Laundry Service Of THU</title>
+</head>
+
+<body>
+
+    <div class="container" id="app">
+        <div class="loading-mask" style="overflow: hidden!important" v-if="loading">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <span style="margin-top:30px;font-size:14px;" v-if="initial_loading">
+                加载字体、脚本、样式表等资源
+            </span>
+        </div>
+        <div class="row" v-show="!loading">
+            <div class="col-lg-4"></div>
+            <div class="col-lg-4">
+                <div style="margin:20px 15px 0 15px;" v-if="route=='home'">
+                    <div style="display: flex;flex-direction:column;">
+                        <span class="headline">
+                            清华大学
+                        </span>
+                        <span class="headline-eng">
+                            Tsinghua University
+                        </span>
+                        <span class="sub-headline">
+                            洗衣房查询
+                        </span>
+                    </div>
+                    <div style="margin-top:10px">
+                        <div class="dorm-box">
+                            <div class="dorm-card" v-for="n in dorm_favorite" v-on:click="view_detail(n[0],n[1])"
+                                v-if="dorm_favorite.length>0">
+                                <span class="dorm-card-text">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51514_4839" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51514_4839)">
+                                            <path
+                                                d="M5.825 22L7.45 14.975L2 10.25L9.2 9.625L12 3L14.8 9.625L22 10.25L16.55 14.975L18.175 22L12 18.275L5.825 22Z"
+                                                fill="#E9D41B" />
+                                        </g>
+                                    </svg>
+                                    {{n[1]}}</span>
+                            </div>
+                            <div class="dorm-card" v-on:click="view_detail(recently_building[0],recently_building[1])"
+                                v-if="recently_building.length>0">
+                                <span class="dorm-card-text">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51516_4848" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51516_4848)">
+                                            <path
+                                                d="M12 21C9.7 21 7.696 20.2373 5.988 18.712C4.27933 17.1873 3.3 15.2833 3.05 13H5.1C5.33333 14.7333 6.104 16.1667 7.412 17.3C8.72067 18.4333 10.25 19 12 19C13.95 19 15.604 18.3207 16.962 16.962C18.3207 15.604 19 13.95 19 12C19 10.05 18.3207 8.39567 16.962 7.037C15.604 5.679 13.95 5 12 5C10.85 5 9.775 5.26667 8.775 5.8C7.775 6.33333 6.93333 7.06667 6.25 8H9V10H3V4H5V6.35C5.85 5.28333 6.88767 4.45833 8.113 3.875C9.33767 3.29167 10.6333 3 12 3C13.25 3 14.421 3.23733 15.513 3.712C16.6043 4.18733 17.5543 4.829 18.363 5.637C19.171 6.44567 19.8127 7.39567 20.288 8.487C20.7627 9.579 21 10.75 21 12C21 13.25 20.7627 14.4207 20.288 15.512C19.8127 16.604 19.171 17.554 18.363 18.362C17.5543 19.1707 16.6043 19.8127 15.513 20.288C14.421 20.7627 13.25 21 12 21ZM14.8 16.2L11 12.4V7H13V11.6L16.2 14.8L14.8 16.2Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                    {{recently_building[1]}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px" v-for="dorm in Object.keys(dorms)">
+                        <div class="line-box">
+                            <span class="line"></span>
+                            <span class="line-text">{{dorm}}</span>
+                            <span class="line"></span>
+                        </div>
+                        <div class="dorm-box">
+                            <div class="dorm-card" v-for="n in Object.keys(dorms[dorm])"
+                                v-on:click="view_detail(dorm,n)">
+                                <span class="dorm-card-text">{{n}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="margin:20px 15px 0 15px;" v-show="route=='detail'">
+                    <div style="display: flex;flex-direction:column;">
+                        <span class="headline">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" v-on:click="view_home()" style="cursor:pointer;">
+                                <mask id="mask0_51496_5292" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
+                                    y="0" width="24" height="24">
+                                    <rect width="24" height="24" fill="#D9D9D9" />
+                                </mask>
+                                <g mask="url(#mask0_51496_5292)">
+                                    <path d="M16 22L6 12L16 2L17.775 3.775L9.55 12L17.775 20.225L16 22Z"
+                                        fill="#814792" />
+                                </g>
+                            </svg>
+                        </span>
+                        <div
+                            style="display: flex;flex-direction:row;align-items: center;justify-content: space-between;">
+                            <div style="display: flex;flex-direction:column;">
+                                <span class="sub-headline">
+                                    {{dorm_chosen}}
+                                </span>
+                                <span class="washer-id">
+                                    刷新于：{{refresh_cnt}}秒前
+                                </span>
+                            </div>
+
+                            <svg v-if="isFavoriteBuilding(dorm_category,dorm_chosen)>-1" style="cursor:pointer"
+                                v-on:click="toggleFavoriteBuilding(dorm_category,dorm_chosen)" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <mask id="mask0_51514_4839" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
+                                    y="0" width="24" height="24">
+                                    <rect width="24" height="24" fill="#D9D9D9" />
+                                </mask>
+                                <g mask="url(#mask0_51514_4839)">
+                                    <path
+                                        d="M5.825 22L7.45 14.975L2 10.25L9.2 9.625L12 3L14.8 9.625L22 10.25L16.55 14.975L18.175 22L12 18.275L5.825 22Z"
+                                        fill="#E9D41B" />
+                                </g>
+                            </svg>
+
+                            <svg v-if="isFavoriteBuilding(dorm_category,dorm_chosen)<0" style="cursor:pointer"
+                                v-on:click="toggleFavoriteBuilding(dorm_category,dorm_chosen)" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <mask id="mask0_51514_4833" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
+                                    y="0" width="24" height="24">
+                                    <rect width="24" height="24" fill="#D9D9D9" />
+                                </mask>
+                                <g mask="url(#mask0_51514_4833)">
+                                    <path
+                                        d="M8.85 17.825L12 15.925L15.15 17.85L14.325 14.25L17.1 11.85L13.45 11.525L12 8.125L10.55 11.5L6.9 11.825L9.675 14.25L8.85 17.825ZM5.825 22L7.45 14.975L2 10.25L9.2 9.625L12 3L14.8 9.625L22 10.25L16.55 14.975L18.175 22L12 18.275L5.825 22Z"
+                                        fill="#6A596C" />
+                                </g>
+                            </svg>
+
+
+                        </div>
+                    </div>
+                    <div style="margin-top:40px" v-for="data in dorm_floors"
+                        v-if="isFavoriteFloor(dorm_category,dorm_chosen,data.floor)>-1">
+                        <div class="line-box">
+                            <span class="line"></span>
+                            <span class="line-text">
+                                <svg style="cursor:pointer"
+                                    v-on:click="toggleFavoriteFloor(dorm_category,dorm_chosen,data.floor)" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <mask id="mask0_51497_4753" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
+                                        y="0" width="24" height="24">
+                                        <rect width="24" height="24" fill="#D9D9D9" />
+                                    </mask>
+                                    <g mask="url(#mask0_51497_4753)">
+                                        <path
+                                            d="M5 21V5C5 4.45 5.196 3.979 5.588 3.587C5.97933 3.19567 6.45 3 7 3H17C17.55 3 18.021 3.19567 18.413 3.587C18.8043 3.979 19 4.45 19 5V21L12 18L5 21Z"
+                                            fill="#E9D41B" />
+                                    </g>
+                                </svg>
+                                {{data.floor}}</span>
+                            <span class="line"></span>
+                        </div>
+                        <div class="dorm-box">
+                            <div class="washer-card" v-for="washer in data.washers">
+                                <span class="washer-num">{{washer.number==""?'∞':washer.number}}</span>
+                                <span class="washer-type">{{washer.name.replace(washer.number,"")}}</span>
+                                <div v-if="washer.status.indexOf('待机')>-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51496_5318" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51496_5318)">
+                                            <path
+                                                d="M12 23L4.8 17.6C4.55 17.4167 4.35433 17.1833 4.213 16.9C4.071 16.6167 4 16.3167 4 16V4C4 3.45 4.196 2.979 4.588 2.587C4.97933 2.19567 5.45 2 6 2H18C18.55 2 19.021 2.19567 19.413 2.587C19.8043 2.979 20 3.45 20 4V16C20 16.3167 19.9293 16.6167 19.788 16.9C19.646 17.1833 19.45 17.4167 19.2 17.6L12 23ZM12 20.5L18 16V4H6V16L12 20.5ZM10.95 15L16.6 9.35L15.2 7.9L10.95 12.15L8.85 10.05L7.4 11.45L10.95 15Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1">
+
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51496_5324" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51496_5324)">
+                                            <path
+                                                d="M12 22C10.75 22 9.57931 21.7626 8.48798 21.288C7.39598 20.8126 6.44598 20.1706 5.63798 19.362C4.82931 18.554 4.18731 17.604 3.71198 16.512C3.23731 15.4206 2.99998 14.25 2.99998 13C2.99998 11.75 3.23731 10.579 3.71198 9.48698C4.18731 8.39564 4.82931 7.44564 5.63798 6.63698C6.44598 5.82898 7.39598 5.18764 8.48798 4.71298C9.57931 4.23764 10.75 3.99998 12 3.99998C13.25 3.99998 14.421 4.23764 15.513 4.71298C16.6043 5.18764 17.5543 5.82898 18.363 6.63698C19.171 7.44564 19.8126 8.39564 20.288 9.48698C20.7626 10.579 21 11.75 21 13C21 14.25 20.7626 15.4206 20.288 16.512C19.8126 17.604 19.171 18.554 18.363 19.362C17.5543 20.1706 16.6043 20.8126 15.513 21.288C14.421 21.7626 13.25 22 12 22ZM14.8 17.2L16.2 15.8L13 12.6V7.99998H11V13.4L14.8 17.2ZM5.59998 2.34998L6.99998 3.74998L2.74998 7.99998L1.34998 6.59998L5.59998 2.34998ZM18.4 2.34998L22.65 6.59998L21.25 7.99998L17 3.74998L18.4 2.34998ZM12 20C13.95 20 15.604 19.3206 16.962 17.962C18.3206 16.604 19 14.95 19 13C19 11.05 18.3206 9.39564 16.962 8.03698C15.604 6.67898 13.95 5.99998 12 5.99998C10.05 5.99998 8.39598 6.67898 7.03798 8.03698C5.67931 9.39564 4.99998 11.05 4.99998 13C4.99998 14.95 5.67931 16.604 7.03798 17.962C8.39598 19.3206 10.05 20 12 20Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.error==true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51510_4826" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51510_4826)">
+                                            <path
+                                                d="M12 17C12.2833 17 12.521 16.904 12.713 16.712C12.9043 16.5207 13 16.2833 13 16C13 15.7167 12.9043 15.479 12.713 15.287C12.521 15.0957 12.2833 15 12 15C11.7167 15 11.4793 15.0957 11.288 15.287C11.096 15.479 11 15.7167 11 16C11 16.2833 11.096 16.5207 11.288 16.712C11.4793 16.904 11.7167 17 12 17ZM11 13H13V7H11V13ZM5 21C4.45 21 3.979 20.8043 3.587 20.413C3.19567 20.021 3 19.55 3 19V5C3 4.45 3.19567 3.979 3.587 3.587C3.979 3.19567 4.45 3 5 3H9.2C9.41667 2.4 9.77933 1.91667 10.288 1.55C10.796 1.18333 11.3667 1 12 1C12.6333 1 13.2043 1.18333 13.713 1.55C14.221 1.91667 14.5833 2.4 14.8 3H19C19.55 3 20.021 3.19567 20.413 3.587C20.8043 3.979 21 4.45 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.021 20.8043 19.55 21 19 21H5ZM5 19H19V5H5V19ZM12 4.25C12.2167 4.25 12.396 4.179 12.538 4.037C12.6793 3.89567 12.75 3.71667 12.75 3.5C12.75 3.28333 12.6793 3.104 12.538 2.962C12.396 2.82067 12.2167 2.75 12 2.75C11.7833 2.75 11.6043 2.82067 11.463 2.962C11.321 3.104 11.25 3.28333 11.25 3.5C11.25 3.71667 11.321 3.89567 11.463 4.037C11.6043 4.179 11.7833 4.25 12 4.25Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.status.indexOf('待机')>-1" style="margin-top:13px">
+                                    <span class="washer-status-ok">
+                                        待命
+                                    </span>
+                                </div>
+                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1"
+                                    style="margin-top:13px">
+                                    <span class="washer-status-not-ok">
+                                        {{washer.eta}}
+                                    </span>
+                                </div>
+                                <div v-if="washer.error==true" style="margin-top:13px">
+                                    <span class="washer-status-not-ok">
+                                        机器出错
+                                    </span>
+                                </div>
+                                <span class="washer-id" style="margin-top:12px">{{washer.code}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:40px" v-for="data in dorm_floors"
+                        v-if="isFavoriteFloor(dorm_category,dorm_chosen,data.floor)<0">
+                        <div class="line-box">
+                            <span class="line"></span>
+                            <span class="line-text">
+                                <svg style="cursor:pointer"
+                                    v-on:click="toggleFavoriteFloor(dorm_category,dorm_chosen,data.floor)" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <mask id="mask0_51497_4747" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
+                                        y="0" width="24" height="24">
+                                        <rect width="24" height="24" fill="#D9D9D9" />
+                                    </mask>
+                                    <g mask="url(#mask0_51497_4747)">
+                                        <path
+                                            d="M5 21V5C5 4.45 5.196 3.979 5.588 3.587C5.97933 3.19567 6.45 3 7 3H17C17.55 3 18.021 3.19567 18.413 3.587C18.8043 3.979 19 4.45 19 5V21L12 18L5 21ZM7 17.95L12 15.8L17 17.95V5H7V17.95Z"
+                                            fill="#6A596C" />
+                                    </g>
+                                </svg>
+                                {{data.floor}}</span>
+                            <span class="line"></span>
+                        </div>
+                        <div class="dorm-box">
+                            <div class="washer-card" v-for="washer in data.washers">
+                                <span class="washer-num">{{washer.number==""?'∞':washer.number}}</span>
+                                <span class="washer-type">{{washer.name.replace(washer.number,"")}}</span>
+                                <div v-if="washer.status.indexOf('待机')>-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51496_5318" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51496_5318)">
+                                            <path
+                                                d="M12 23L4.8 17.6C4.55 17.4167 4.35433 17.1833 4.213 16.9C4.071 16.6167 4 16.3167 4 16V4C4 3.45 4.196 2.979 4.588 2.587C4.97933 2.19567 5.45 2 6 2H18C18.55 2 19.021 2.19567 19.413 2.587C19.8043 2.979 20 3.45 20 4V16C20 16.3167 19.9293 16.6167 19.788 16.9C19.646 17.1833 19.45 17.4167 19.2 17.6L12 23ZM12 20.5L18 16V4H6V16L12 20.5ZM10.95 15L16.6 9.35L15.2 7.9L10.95 12.15L8.85 10.05L7.4 11.45L10.95 15Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1">
+
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51496_5324" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51496_5324)">
+                                            <path
+                                                d="M12 22C10.75 22 9.57931 21.7626 8.48798 21.288C7.39598 20.8126 6.44598 20.1706 5.63798 19.362C4.82931 18.554 4.18731 17.604 3.71198 16.512C3.23731 15.4206 2.99998 14.25 2.99998 13C2.99998 11.75 3.23731 10.579 3.71198 9.48698C4.18731 8.39564 4.82931 7.44564 5.63798 6.63698C6.44598 5.82898 7.39598 5.18764 8.48798 4.71298C9.57931 4.23764 10.75 3.99998 12 3.99998C13.25 3.99998 14.421 4.23764 15.513 4.71298C16.6043 5.18764 17.5543 5.82898 18.363 6.63698C19.171 7.44564 19.8126 8.39564 20.288 9.48698C20.7626 10.579 21 11.75 21 13C21 14.25 20.7626 15.4206 20.288 16.512C19.8126 17.604 19.171 18.554 18.363 19.362C17.5543 20.1706 16.6043 20.8126 15.513 21.288C14.421 21.7626 13.25 22 12 22ZM14.8 17.2L16.2 15.8L13 12.6V7.99998H11V13.4L14.8 17.2ZM5.59998 2.34998L6.99998 3.74998L2.74998 7.99998L1.34998 6.59998L5.59998 2.34998ZM18.4 2.34998L22.65 6.59998L21.25 7.99998L17 3.74998L18.4 2.34998ZM12 20C13.95 20 15.604 19.3206 16.962 17.962C18.3206 16.604 19 14.95 19 13C19 11.05 18.3206 9.39564 16.962 8.03698C15.604 6.67898 13.95 5.99998 12 5.99998C10.05 5.99998 8.39598 6.67898 7.03798 8.03698C5.67931 9.39564 4.99998 11.05 4.99998 13C4.99998 14.95 5.67931 16.604 7.03798 17.962C8.39598 19.3206 10.05 20 12 20Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.error==true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51510_4826" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51510_4826)">
+                                            <path
+                                                d="M12 17C12.2833 17 12.521 16.904 12.713 16.712C12.9043 16.5207 13 16.2833 13 16C13 15.7167 12.9043 15.479 12.713 15.287C12.521 15.0957 12.2833 15 12 15C11.7167 15 11.4793 15.0957 11.288 15.287C11.096 15.479 11 15.7167 11 16C11 16.2833 11.096 16.5207 11.288 16.712C11.4793 16.904 11.7167 17 12 17ZM11 13H13V7H11V13ZM5 21C4.45 21 3.979 20.8043 3.587 20.413C3.19567 20.021 3 19.55 3 19V5C3 4.45 3.19567 3.979 3.587 3.587C3.979 3.19567 4.45 3 5 3H9.2C9.41667 2.4 9.77933 1.91667 10.288 1.55C10.796 1.18333 11.3667 1 12 1C12.6333 1 13.2043 1.18333 13.713 1.55C14.221 1.91667 14.5833 2.4 14.8 3H19C19.55 3 20.021 3.19567 20.413 3.587C20.8043 3.979 21 4.45 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.021 20.8043 19.55 21 19 21H5ZM5 19H19V5H5V19ZM12 4.25C12.2167 4.25 12.396 4.179 12.538 4.037C12.6793 3.89567 12.75 3.71667 12.75 3.5C12.75 3.28333 12.6793 3.104 12.538 2.962C12.396 2.82067 12.2167 2.75 12 2.75C11.7833 2.75 11.6043 2.82067 11.463 2.962C11.321 3.104 11.25 3.28333 11.25 3.5C11.25 3.71667 11.321 3.89567 11.463 4.037C11.6043 4.179 11.7833 4.25 12 4.25Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.status.indexOf('待机')>-1" style="margin-top:13px">
+                                    <span class="washer-status-ok">
+                                        待命
+                                    </span>
+                                </div>
+                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1"
+                                    style="margin-top:13px">
+                                    <span class="washer-status-not-ok">
+                                        {{washer.eta}}
+                                    </span>
+                                </div>
+                                <div v-if="washer.error==true" style="margin-top:13px">
+                                    <span class="washer-status-not-ok">
+                                        机器出错
+                                    </span>
+                                </div>
+                                <span class="washer-id" style="margin-top:12px">{{washer.code}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div
+                    style="margin-top:90px;margin-bottom:40px;display: flex;flex-direction: column;text-align: center;">
+
+                    <span class="bottom-text">没有你所在的公寓楼？数据不正确？</span>
+                    <a href="#" class="bottom-link" data-bs-toggle="modal" data-bs-target="#feedbackModal">请点击这里</a>
+                    <span class="bottom-text">向washer.sdevs.top致敬</span>
+                    <a href="#" class="bottom-link" onclick="localStorage.clear();window.location.reload();">清除隐私内容</a>
+                </div>
+            </div>
+            <div class="col-lg-4"></div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="feedbackModalLabel">请加入反馈微信群</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="display: flex;justify-content:center;">
+                        <img src="./assets/image/feedback.png" alt="QR-CODE" width="80%" height="80%">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+
+        function ajax(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, false);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200 || xhr.status == 304) {
+                        callback(xhr.responseText);
+                    }
+                }
+            }
+            xhr.send();
+        }
+
+        let INT = 0;
+        let INT_cnt = 0;
+        let last_updated = 0;
+
+        function refresh_data() {
+            if (app.dorm_chosen == "") {
+                clearInterval(INT);
+                return;
+            }
+            let url = "https://service-f973foaz-1258628808.bj.apigw.tencentcs.com/release/building/" +
+                app.dorms[app.dorm_category][app.dorm_chosen];
+            ajax(url, (e) => {
+                let result_obj = JSON.parse(e);
+                let updateTime = result_obj.updated;
+                last_updated = new Date(updateTime).getTime();
+                app.dorm_floors = result_obj.result;
+                app.$forceUpdate();
+            });
+        }
+
+        function get_loading() {
+            app.loading = true;
+            app.$forceUpdate();
+        }
+
+        function exit_loading() {
+            app.loading = false;
+            app.$forceUpdate();
+        }
+
+        window.onload = () => {
+            setTimeout(() => {
+                exit_loading();
+                app.initial_loading=false;
+            }, 300);
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                route: 'home',
+                dorms: {
+                    '紫荆公寓': {
+                        '紫荆1号楼': 'zijing01',
+                        '紫荆2号楼': 'zijing02',
+                        '紫荆3号楼': 'zijing03',
+                        '紫荆4号楼': 'zijing04',
+                        '紫荆5号楼': 'zijing05',
+                        '紫荆6号楼': 'zijing06',
+                        '紫荆7号楼': 'zijing07',
+                        '紫荆8号楼': 'zijing08',
+                        '紫荆9号楼': 'zijing09',
+                        '紫荆10号楼': 'zijing10',
+                        '紫荆11号楼': 'zijing11',
+                        '紫荆12号楼3单元': 'zijing12',
+                        '紫荆13号楼2单元': 'zijing13',
+                        '紫荆14号楼': 'zijing14',
+                        '紫荆15号楼': 'zijing15',
+                        '紫荆16号楼': 'zijing16',
+                        '紫荆17号楼': 'zijing17',
+                        '紫荆18号楼': 'zijing18',
+                        '紫荆19号楼': 'zijing19',
+                        '紫荆20号楼': 'zijing20',
+                        '紫荆21号楼': 'zijing21',
+                        '紫荆22号楼': 'zijing22',
+                        '紫荆23号楼': 'zijing23',
+                    },
+                    '南区宿舍': {
+                        '南区1号楼': 'south01',
+                        '南区3号楼': 'south03',
+                        '南区4号楼': 'south04',
+                        '南区5号楼': 'south05',
+                        '南区6号楼': 'south06',
+                        '南区7号楼': 'south07',
+                        '南区8号楼': 'south08',
+                        '南区9号楼': 'south09',
+                        '南区10号楼': 'south10',
+                        '南区10号楼北楼': 'south10north',
+                        '南区11号楼': 'south11',
+                        '南区12号楼': 'south12',
+                        '南区13号楼': 'south13',
+                        '南区14号楼': 'south14',
+                        '南区15号楼': 'south15',
+                        '南区16号楼': 'south16',
+                        '南区18号楼': 'south18',
+                        '南区19号楼': 'south19',
+                        '南区20号楼': 'south20',
+                        '南区21号楼': 'south21',
+                        '南区22号楼': 'south22',
+                        '南区23号楼': 'south23',
+                        '南区24号楼': 'south24',
+                        '南区25号楼': 'south25',
+                        '南区26号楼': 'south26',
+                        '南区27号楼': 'south27',
+                        '南区28号楼': 'south28',
+                        '南区29号楼': 'south29',
+                        '南区30号楼': 'south30',
+                        '南区31号楼': 'south31',
+                        '南区32号楼': 'south32',
+                        '南区33号楼': 'south33',
+                        '南区34号楼': 'south34',
+                        '南区35号楼': 'south35',
+                        '南区36号楼': 'south36',
+                        '南区37号楼': 'south37'
+                    },
+                    '其它位置': {
+                        '五道口金融学院': 'wudaokou',
+                        '双清公寓': 'shuangqing',
+                        '双清公寓南楼': 'shuangqingsouth'
+                    }
+                },
+                dorm_chosen: '',
+                dorm_category: '',
+                dorm_floors: [],
+                refresh_cnt: 0,
+                recently_building: [],      //[category,building]
+                dorm_favorite: [],          //[[category,building]]
+                floor_favorite: [],         //[[category,building,floor]]
+                loading: true,
+                initial_loading:true
+            },
+            mounted: function () {
+                this.loadRecentAndFavorite();
+            },
+            methods: {
+                view_detail: function (cat, dorm) {
+                    get_loading();
+                    window.setTimeout(() => {
+                        this.dorm_chosen = dorm;
+                        this.dorm_category = cat;
+                        this.route = "detail";
+                        app.$forceUpdate();
+                        this.download_data();
+                        localStorage.setItem("recent_dorm", JSON.stringify([this.dorm_category, this.dorm_chosen]));
+                        this.loadRecentAndFavorite();
+                        exit_loading();
+
+                    }, 50);
+                },
+                view_home: function (e) {
+                    this.loadRecentAndFavorite();
+                    this.route = "home";
+                    this.dorm_chosen = "";
+                    clearInterval(INT);
+                    clearInterval(INT_cnt);
+                },
+                download_data: function () {
+                    clearInterval(INT);
+                    clearInterval(INT_cnt);
+                    refresh_data();
+                    INT = setInterval(() => {
+                        refresh_data();
+                    }, 15000);
+                    INT_cnt = setInterval(() => {
+                        app.refresh_cnt = ((new Date().getTime() - last_updated) / 1000).toFixed(1);
+                    }, 100);
+                },
+                loadRecentAndFavorite: function () {
+                    let recent_dorm = localStorage.getItem("recent_dorm");
+                    if (recent_dorm == null) {
+                        this.recently_building = [];
+                    }
+                    else {
+                        this.recently_building = JSON.parse(recent_dorm);
+                    }
+                    let fav_dorm = localStorage.getItem("fav_dorm");
+                    if (fav_dorm == null) {
+                        this.dorm_favorite = [];
+                    }
+                    else {
+                        this.dorm_favorite = JSON.parse(fav_dorm);
+                    }
+                    let fav_floor = localStorage.getItem("fav_floor");
+                    if (fav_floor == null) {
+                        this.floor_favorite = [];
+                    }
+                    else {
+                        this.floor_favorite = JSON.parse(fav_floor);
+                    }
+                    this.$forceUpdate();
+                },
+                isFavoriteBuilding: function (cat, dorm) {
+                    let onFav_flag = -1;
+                    for (let i = 0; i < this.dorm_favorite.length; i++) {
+                        if (this.dorm_favorite[i][0] == cat && this.dorm_favorite[i][1] == dorm) {
+                            onFav_flag = i;
+                            break;
+                        }
+                    }
+                    return onFav_flag;
+                },
+                toggleFavoriteBuilding: function (cat, dorm) {
+                    let onFav_flag = this.isFavoriteBuilding(cat, dorm);
+                    if (onFav_flag > -1) {
+                        //delete favorite
+                        this.dorm_favorite.splice(onFav_flag, 1);
+                    }
+                    else {
+                        this.dorm_favorite.push([cat, dorm]);
+                    }
+                    localStorage.setItem("fav_dorm", JSON.stringify(this.dorm_favorite));
+                },
+                isFavoriteFloor: function (cat, dorm, floor) {
+                    let onFav_flag = -1;
+                    for (let i = 0; i < this.floor_favorite.length; i++) {
+                        if (this.floor_favorite[i][0] == cat && this.floor_favorite[i][1] == dorm
+                            && this.floor_favorite[i][2] == floor) {
+                            onFav_flag = i;
+                            break;
+                        }
+                    }
+                    return onFav_flag;
+                },
+                toggleFavoriteFloor: function (cat, dorm, floor) {
+                    let onFav_flag = this.isFavoriteFloor(cat, dorm, floor);
+                    if (onFav_flag > -1) {
+                        //delete favorite
+                        this.floor_favorite.splice(onFav_flag, 1);
+                    }
+                    else {
+                        this.floor_favorite.push([cat, dorm, floor]);
+                    }
+                    localStorage.setItem("fav_floor", JSON.stringify(this.floor_favorite));
+                }
+            }
+        });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        }
+    </script>
+</body>
+
+</html>
