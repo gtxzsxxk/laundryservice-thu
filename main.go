@@ -14,5 +14,5 @@ func main() {
 	r.GET("/", index)
 	r.GET("/dormitories", get_dorms)
 	r.GET("/dormitories/:id", get_dorms_devices)
-	r.Run() // 监听并在 0.0.0.0:8080 上启动服务
+	r.Run("localhost:10080") // 监听并在 0.0.0.0:8080 上启动服务
 }
