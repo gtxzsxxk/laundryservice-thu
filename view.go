@@ -133,21 +133,22 @@ func get_dorms_devices(c *gin.Context) {
 		/* 状态：待机、工作（运转）、脱水开盖、机器出错 */
 		machine_info_arr := strings.Split(v["macUnionCode"].(string), " ")
 		status_shit := strings.Split(v["status"].(string), " ")
+		status_str := v["status"].(string)
 		var status string
 		var eta string
 		var updated string
 		eta = "N/A"
 		updated = "N/A"
-		if strings.Contains(status_shit[0], "待") {
+		if strings.Contains(status_str, "待") {
 			status = "idle"
-		} else if strings.Contains(status_shit[0], "工") || strings.Contains(status_shit[0], "运") {
+		} else if strings.Contains(status_str, "工") || strings.Contains(status_str, "运") {
 			status = "working"
 			for _, value := range status_shit {
 				if strings.Contains(value, "剩余") {
 					eta = strings.Split(value, ":")[1]
 				}
 			}
-		} else if strings.Contains(status_shit[0], "脱水") || strings.Contains(status_shit[0], "开盖") {
+		} else if strings.Contains(status_str, "脱水") || strings.Contains(status_str, "开盖") {
 			status = "illegally_operated"
 		} else {
 			status = "error"
