@@ -152,13 +152,13 @@
 
                         </div>
                     </div>
-                    <div style="margin-top:40px" v-for="data in dorm_floors"
-                        v-if="isFavoriteFloor(dorm_category,dorm_chosen,data.floor)>-1">
+                    <div style="margin-top:40px" v-for="(value,key) in dorm_floors"
+                        v-if="isFavoriteFloor(dorm_category,dorm_chosen,key)>-1">
                         <div class="line-box">
                             <span class="line"></span>
                             <span class="line-text">
                                 <svg style="cursor:pointer"
-                                    v-on:click="toggleFavoriteFloor(dorm_category,dorm_chosen,data.floor)" width="24"
+                                    v-on:click="toggleFavoriteFloor(dorm_category,dorm_chosen,key)" width="24"
                                     height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <mask id="mask0_51497_4753" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
                                         y="0" width="24" height="24">
@@ -170,14 +170,14 @@
                                             fill="#E9D41B" />
                                     </g>
                                 </svg>
-                                {{data.floor}}</span>
+                                {{key}}</span>
                             <span class="line"></span>
                         </div>
                         <div class="dorm-box">
-                            <div class="washer-card" v-for="washer in data.washers">
-                                <span class="washer-num">{{washer.number==""?'∞':washer.number}}</span>
-                                <span class="washer-type">{{washer.name.replace(washer.number,"")}}</span>
-                                <div v-if="washer.status.indexOf('待机')>-1">
+                            <div class="washer-card" v-for="washer in value">
+                                <span class="washer-num">{{washer.number}}</span>
+                                <span class="washer-type">{{washer.name}}</span>
+                                <div v-if="washer.status=='idle'">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <mask id="mask0_51496_5318" style="mask-type:alpha" maskUnits="userSpaceOnUse"
@@ -191,8 +191,7 @@
                                         </g>
                                     </svg>
                                 </div>
-                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1">
-
+                                <div v-if="washer.status=='working'">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <mask id="mask0_51496_5324" style="mask-type:alpha" maskUnits="userSpaceOnUse"
@@ -206,7 +205,7 @@
                                         </g>
                                     </svg>
                                 </div>
-                                <div v-if="washer.error==true">
+                                <div v-if="washer.status=='error'">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <mask id="mask0_51510_4826" style="mask-type:alpha" maskUnits="userSpaceOnUse"
@@ -220,33 +219,51 @@
                                         </g>
                                     </svg>
                                 </div>
-                                <div v-if="washer.status.indexOf('待机')>-1" style="margin-top:13px">
+                                <div v-if="washer.status=='illegally_operated'">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51524_4747" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51524_4747)">
+                                            <path
+                                                d="M12 21C10.9167 21 9.91267 20.7333 8.988 20.2C8.06267 19.6667 7.33333 18.9333 6.8 18H4V16H6.1C6.05 15.6667 6.021 15.3333 6.013 15C6.00433 14.6667 6 14.3333 6 14H4V12H6C6 11.6667 6.00433 11.3333 6.013 11C6.021 10.6667 6.05 10.3333 6.1 10H4V8H6.8C7.03333 7.61667 7.296 7.25833 7.588 6.925C7.87933 6.59167 8.21667 6.3 8.6 6.05L7 4.4L8.4 3L10.55 5.15C11.0167 5 11.4917 4.925 11.975 4.925C12.4583 4.925 12.9333 5 13.4 5.15L15.6 3L17 4.4L15.35 6.05C15.7333 6.3 16.0793 6.58733 16.388 6.912C16.696 7.23733 16.9667 7.6 17.2 8H20V10H17.9C17.95 10.3333 17.9793 10.6667 17.988 11C17.996 11.3333 18 11.6667 18 12H20V14H18C18 14.3333 17.996 14.6667 17.988 15C17.9793 15.3333 17.95 15.6667 17.9 16H20V18H17.2C16.6667 18.9333 15.9377 19.6667 15.013 20.2C14.0877 20.7333 13.0833 21 12 21ZM12 19C13.1 19 14.0417 18.6083 14.825 17.825C15.6083 17.0417 16 16.1 16 15V11C16 9.9 15.6083 8.95833 14.825 8.175C14.0417 7.39167 13.1 7 12 7C10.9 7 9.95833 7.39167 9.175 8.175C8.39167 8.95833 8 9.9 8 11V15C8 16.1 8.39167 17.0417 9.175 17.825C9.95833 18.6083 10.9 19 12 19ZM10 16H14V14H10V16ZM10 12H14V10H10V12Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.status=='idle'" style="margin-top:13px">
                                     <span class="washer-status-ok">
                                         待命
                                     </span>
                                 </div>
-                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1"
-                                    style="margin-top:13px">
+                                <div v-if="washer.status=='working'" style="margin-top:13px">
                                     <span class="washer-status-not-ok">
                                         {{washer.eta}}
                                     </span>
                                 </div>
-                                <div v-if="washer.error==true" style="margin-top:13px">
+                                <div v-if="washer.status=='error'" style="margin-top:13px">
                                     <span class="washer-status-not-ok">
                                         机器出错
                                     </span>
                                 </div>
-                                <span class="washer-id" style="margin-top:12px">{{washer.code}}</span>
+                                <div v-if="washer.status=='illegally_operated'" style="margin-top:13px">
+                                    <span class="washer-status-not-ok">
+                                        非法操作
+                                    </span>
+                                </div>
+                                <span class="washer-id" style="margin-top:12px">{{washer.id}}</span>
                             </div>
                         </div>
                     </div>
-                    <div style="margin-top:40px" v-for="data in dorm_floors"
-                        v-if="isFavoriteFloor(dorm_category,dorm_chosen,data.floor)<0">
+                    <div style="margin-top:40px" v-for="(value,key) in dorm_floors"
+                        v-if="isFavoriteFloor(dorm_category,dorm_chosen,key)<0">
                         <div class="line-box">
                             <span class="line"></span>
                             <span class="line-text">
                                 <svg style="cursor:pointer"
-                                    v-on:click="toggleFavoriteFloor(dorm_category,dorm_chosen,data.floor)" width="24"
+                                    v-on:click="toggleFavoriteFloor(dorm_category,dorm_chosen,key)" width="24"
                                     height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <mask id="mask0_51497_4747" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
                                         y="0" width="24" height="24">
@@ -258,14 +275,14 @@
                                             fill="#6A596C" />
                                     </g>
                                 </svg>
-                                {{data.floor}}</span>
+                                {{key}}</span>
                             <span class="line"></span>
                         </div>
                         <div class="dorm-box">
-                            <div class="washer-card" v-for="washer in data.washers">
-                                <span class="washer-num">{{washer.number==""?'∞':washer.number}}</span>
-                                <span class="washer-type">{{washer.name.replace(washer.number,"")}}</span>
-                                <div v-if="washer.status.indexOf('待机')>-1">
+                            <div class="washer-card" v-for="washer in value">
+                                <span class="washer-num">{{washer.number}}</span>
+                                <span class="washer-type">{{washer.name}}</span>
+                                <div v-if="washer.status=='idle'">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <mask id="mask0_51496_5318" style="mask-type:alpha" maskUnits="userSpaceOnUse"
@@ -279,8 +296,7 @@
                                         </g>
                                     </svg>
                                 </div>
-                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1">
-
+                                <div v-if="washer.status=='working'">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <mask id="mask0_51496_5324" style="mask-type:alpha" maskUnits="userSpaceOnUse"
@@ -294,7 +310,7 @@
                                         </g>
                                     </svg>
                                 </div>
-                                <div v-if="washer.error==true">
+                                <div v-if="washer.status=='error'">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <mask id="mask0_51510_4826" style="mask-type:alpha" maskUnits="userSpaceOnUse"
@@ -308,23 +324,41 @@
                                         </g>
                                     </svg>
                                 </div>
-                                <div v-if="washer.status.indexOf('待机')>-1" style="margin-top:13px">
+                                <div v-if="washer.status=='illegally_operated'">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_51524_4747" style="mask-type:alpha" maskUnits="userSpaceOnUse"
+                                            x="0" y="0" width="24" height="24">
+                                            <rect width="24" height="24" fill="#D9D9D9" />
+                                        </mask>
+                                        <g mask="url(#mask0_51524_4747)">
+                                            <path
+                                                d="M12 21C10.9167 21 9.91267 20.7333 8.988 20.2C8.06267 19.6667 7.33333 18.9333 6.8 18H4V16H6.1C6.05 15.6667 6.021 15.3333 6.013 15C6.00433 14.6667 6 14.3333 6 14H4V12H6C6 11.6667 6.00433 11.3333 6.013 11C6.021 10.6667 6.05 10.3333 6.1 10H4V8H6.8C7.03333 7.61667 7.296 7.25833 7.588 6.925C7.87933 6.59167 8.21667 6.3 8.6 6.05L7 4.4L8.4 3L10.55 5.15C11.0167 5 11.4917 4.925 11.975 4.925C12.4583 4.925 12.9333 5 13.4 5.15L15.6 3L17 4.4L15.35 6.05C15.7333 6.3 16.0793 6.58733 16.388 6.912C16.696 7.23733 16.9667 7.6 17.2 8H20V10H17.9C17.95 10.3333 17.9793 10.6667 17.988 11C17.996 11.3333 18 11.6667 18 12H20V14H18C18 14.3333 17.996 14.6667 17.988 15C17.9793 15.3333 17.95 15.6667 17.9 16H20V18H17.2C16.6667 18.9333 15.9377 19.6667 15.013 20.2C14.0877 20.7333 13.0833 21 12 21ZM12 19C13.1 19 14.0417 18.6083 14.825 17.825C15.6083 17.0417 16 16.1 16 15V11C16 9.9 15.6083 8.95833 14.825 8.175C14.0417 7.39167 13.1 7 12 7C10.9 7 9.95833 7.39167 9.175 8.175C8.39167 8.95833 8 9.9 8 11V15C8 16.1 8.39167 17.0417 9.175 17.825C9.95833 18.6083 10.9 19 12 19ZM10 16H14V14H10V16ZM10 12H14V10H10V12Z"
+                                                fill="#6A596C" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div v-if="washer.status=='idle'" style="margin-top:13px">
                                     <span class="washer-status-ok">
                                         待命
                                     </span>
                                 </div>
-                                <div v-if="washer.status.indexOf('工作')>-1||washer.status.indexOf('运转')>-1"
-                                    style="margin-top:13px">
+                                <div v-if="washer.status=='working'" style="margin-top:13px">
                                     <span class="washer-status-not-ok">
                                         {{washer.eta}}
                                     </span>
                                 </div>
-                                <div v-if="washer.error==true" style="margin-top:13px">
+                                <div v-if="washer.status=='error'" style="margin-top:13px">
                                     <span class="washer-status-not-ok">
                                         机器出错
                                     </span>
                                 </div>
-                                <span class="washer-id" style="margin-top:12px">{{washer.code}}</span>
+                                <div v-if="washer.status=='illegally_operated'" style="margin-top:13px">
+                                    <span class="washer-status-not-ok">
+                                        非法操作
+                                    </span>
+                                </div>
+                                <span class="washer-id" style="margin-top:12px">{{washer.id}}</span>
                             </div>
                         </div>
                     </div>
@@ -366,7 +400,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script>
 
-        function ajax(url, callback) {
+        function ajax(url, data, callback) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, false);
             xhr.onreadystatechange = function () {
@@ -376,27 +410,57 @@
                     }
                 }
             }
-            xhr.send();
+            xhr.send(data);
         }
 
         let INT = 0;
         let INT_cnt = 0;
         let last_updated = 0;
 
+        function download_source_data(callback) {
+            ajax("/dormitories", "{}", (e) => {
+                let dorms = JSON.parse(e);
+                app.dorms = { "紫荆公寓": {}, "南区宿舍": {}, "双清公寓": {}, "其它位置": {} };
+                for (let i = 0; i < dorms.length; i++) {
+                    if (dorms[i].value == "0") {
+                        continue;
+                    }
+                    else if (dorms[i].text.indexOf("紫荆") > -1) {
+                        app.dorms["紫荆公寓"][dorms[i]["text"]] = dorms[i]["value"];
+                    }
+                    else if (dorms[i].text.indexOf("南区") > -1) {
+                        app.dorms["南区宿舍"][dorms[i]["text"]] = dorms[i]["value"];
+                    }
+                    else if (dorms[i].text.indexOf("双清") > -1) {
+                        app.dorms["双清公寓"][dorms[i]["text"]] = dorms[i]["value"];
+                    }
+                    else {
+                        app.dorms["其它位置"][dorms[i]["text"]] = dorms[i]["value"];
+                    }
+                }
+                app.$forceUpdate();
+                callback();
+            });
+        }
+
         function refresh_data() {
             if (app.dorm_chosen == "") {
                 clearInterval(INT);
                 return;
             }
-            let url = "https://service-f973foaz-1258628808.bj.apigw.tencentcs.com/release/building/" +
-                app.dorms[app.dorm_category][app.dorm_chosen];
-            ajax(url, (e) => {
-                let result_obj = JSON.parse(e);
-                let updateTime = result_obj.updated;
-                last_updated = new Date(updateTime).getTime();
-                app.dorm_floors = result_obj.result;
-                app.$forceUpdate();
+            download_source_data(() => {
+                let url = "/dormitories/" +
+                    app.dorms[app.dorm_category][app.dorm_chosen];
+                ajax(url, "", (e) => {
+                    let result_obj = JSON.parse(e);
+                    //let updateTime = result_obj.updated;
+                    //last_updated = new Date(updateTime).getTime();
+                    last_updated = new Date().getTime();
+                    app.dorm_floors = result_obj;
+                    app.$forceUpdate();
+                });
             });
+
         }
 
         function get_loading() {
@@ -410,86 +474,19 @@
         }
 
         window.onload = () => {
-            setTimeout(() => {
-                exit_loading();
-                app.initial_loading=false;
-            }, 300);
+            download_source_data(() => {
+                setTimeout(() => {
+                    exit_loading();
+                    app.initial_loading = false;
+                }, 300);
+            });
         }
 
         var app = new Vue({
             el: '#app',
             data: {
                 route: 'home',
-                dorms: {
-                    '紫荆公寓': {
-                        '紫荆1号楼': 'zijing01',
-                        '紫荆2号楼': 'zijing02',
-                        '紫荆3号楼': 'zijing03',
-                        '紫荆4号楼': 'zijing04',
-                        '紫荆5号楼': 'zijing05',
-                        '紫荆6号楼': 'zijing06',
-                        '紫荆7号楼': 'zijing07',
-                        '紫荆8号楼': 'zijing08',
-                        '紫荆9号楼': 'zijing09',
-                        '紫荆10号楼': 'zijing10',
-                        '紫荆11号楼': 'zijing11',
-                        '紫荆12号楼3单元': 'zijing12',
-                        '紫荆13号楼2单元': 'zijing13',
-                        '紫荆14号楼': 'zijing14',
-                        '紫荆15号楼': 'zijing15',
-                        '紫荆16号楼': 'zijing16',
-                        '紫荆17号楼': 'zijing17',
-                        '紫荆18号楼': 'zijing18',
-                        '紫荆19号楼': 'zijing19',
-                        '紫荆20号楼': 'zijing20',
-                        '紫荆21号楼': 'zijing21',
-                        '紫荆22号楼': 'zijing22',
-                        '紫荆23号楼': 'zijing23',
-                    },
-                    '南区宿舍': {
-                        '南区1号楼': 'south01',
-                        '南区3号楼': 'south03',
-                        '南区4号楼': 'south04',
-                        '南区5号楼': 'south05',
-                        '南区6号楼': 'south06',
-                        '南区7号楼': 'south07',
-                        '南区8号楼': 'south08',
-                        '南区9号楼': 'south09',
-                        '南区10号楼': 'south10',
-                        '南区10号楼北楼': 'south10north',
-                        '南区11号楼': 'south11',
-                        '南区12号楼': 'south12',
-                        '南区13号楼': 'south13',
-                        '南区14号楼': 'south14',
-                        '南区15号楼': 'south15',
-                        '南区16号楼': 'south16',
-                        '南区18号楼': 'south18',
-                        '南区19号楼': 'south19',
-                        '南区20号楼': 'south20',
-                        '南区21号楼': 'south21',
-                        '南区22号楼': 'south22',
-                        '南区23号楼': 'south23',
-                        '南区24号楼': 'south24',
-                        '南区25号楼': 'south25',
-                        '南区26号楼': 'south26',
-                        '南区27号楼': 'south27',
-                        '南区28号楼': 'south28',
-                        '南区29号楼': 'south29',
-                        '南区30号楼': 'south30',
-                        '南区31号楼': 'south31',
-                        '南区32号楼': 'south32',
-                        '南区33号楼': 'south33',
-                        '南区34号楼': 'south34',
-                        '南区35号楼': 'south35',
-                        '南区36号楼': 'south36',
-                        '南区37号楼': 'south37'
-                    },
-                    '其它位置': {
-                        '五道口金融学院': 'wudaokou',
-                        '双清公寓': 'shuangqing',
-                        '双清公寓南楼': 'shuangqingsouth'
-                    }
-                },
+                dorms: { "紫荆公寓": {}, "南区宿舍": {}, "其它位置": {} },
                 dorm_chosen: '',
                 dorm_category: '',
                 dorm_floors: [],
@@ -498,8 +495,8 @@
                 dorm_favorite: [],          //[[category,building]]
                 floor_favorite: [],         //[[category,building,floor]]
                 loading: true,
-                initial_loading:true,
-                loading_text:"正在从腾讯物联网API下载数据"
+                initial_loading: true,
+                loading_text: "正在从腾讯物联网API下载数据"
             },
             mounted: function () {
                 this.loadRecentAndFavorite();
