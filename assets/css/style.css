@@ -8,6 +8,7 @@
     --secondary30: #514154;
     --secondary40: #6A596C;
     --secondary50: #847185;
+    --secondary50-for-line: #84718570;#6a596c70
     --secondary70: #B9A5BB;
     --favorite: #E9D41B;
     --available: #0A9431;
@@ -24,6 +25,7 @@
         --secondary30: #B9A5BB;
         --secondary40: #847185;
         --secondary50: #6A596C;
+        --secondary50-for-line: #6a596c70;
         --secondary70: #514154;
         --favorite: #E9D41B;
         --available: #0A9431;
@@ -71,7 +73,7 @@ body {
 
 .line {
     flex-grow: 1;
-    border-top: 1px solid var(--secondary50);
+    border-top: 1px solid var(--secondary50-for-line);
 }
 
 .line-text {
